@@ -56,10 +56,57 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item ">
-            <a href="<?php echo base_url();?>pengajuancuti" class="nav-link">
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
-                <p>Pengajuan Cuti</p>
+              <p>
+                Pengajuan Cuti
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_TAHUNAN;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Tahunan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_BESAR;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Besar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_SAKIT;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Sakit</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_LAHIR;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Melahirkan/Gugur</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_HAJI;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Haji/Umroh</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url();?>pengajuancuti?jenis=<?php echo CUTI_DISPEN;?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuti Dispensasi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item ">
+            <a href="<?php echo base_url();?>jatahcuti" class="nav-link">
+              <i class="nav-icon fas fa-archive"></i>
+                <p>Jatah Cuti</p>
             </a>
           </li>
           <li class="nav-item ">
@@ -73,7 +120,7 @@
           <li class="nav-item ">
             <a href="<?php echo base_url();?>dashboard/change_login" class="nav-link">
               <i class="nav-icon fas fa-arrow-circle-right"></i>
-                <p>Login sebagai <?php echo $level_karyawan[$karyawan->krw_level]['text'];?></p>
+                <p>Login sebagai <?php echo $status_level[$karyawan->krw_level]['text'];?></p>
             </a>
           </li>
           <?php endif;?>

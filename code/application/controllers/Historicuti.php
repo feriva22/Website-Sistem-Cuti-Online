@@ -19,6 +19,9 @@ class Historicuti extends CI_Controller {
         $data = array();
         $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1);
         $data['status_approve'] = $this->lang->line('status_approve');
+        $data['status_level'] = $this->lang->line('status_level');
+
+        $data['jenis_cuti'] = $this->lang->line('jenis_cuti');
 
         $data['add_js'] = array(
             'plugins/datatables/jquery.dataTables.js',
@@ -30,9 +33,7 @@ class Historicuti extends CI_Controller {
             'data' => $data,
             'src'  => '__scripts/historicuti'
         );
-        $data['level_karyawan'] = $this->lang->line('level_karyawan');
-
-
+        
         $this->site_info->set_page_title('Histori Cuti');
 
         $this->load->view('__base/header',$data);
@@ -49,6 +50,6 @@ class Historicuti extends CI_Controller {
 
         $auth = $this->session->userdata('login_data');
 
-        $this->m_cuti->get_datatable('cti_karyawan ='. $auth['data']->krw_id);
+        $this->m_cuti->get_datatable("cti_karyawan = ". $auth['data']->krw_id,"cti_tglpengajuan desc");
     }
 }

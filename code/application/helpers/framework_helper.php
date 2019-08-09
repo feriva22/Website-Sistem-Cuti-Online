@@ -20,16 +20,13 @@ if(!function_exists('check_date_range')){
         $end = new DateTime(max($range2));
 
         if ($start >= $range_min && $end <= $range_max) {
-            echo 'Overlapping!';
-            return TRUE;
+            return OVERLAP; //overlaping
         } 
         else if($end > $range_min && $start < $range_max){
-            echo "partialy";
-            return TRUE;
+            return PARTIAL; //partial
         }
         else {
-            echo 'free!';
-            return FALSE;
+            return FREE; //free from range 2
         }
     }
 }
@@ -64,8 +61,8 @@ if (!function_exists('is_login')){
 }
 
 //helper untuk check apakah login karyawan 
-if (!function_exists('is_karyawan')){
-    function is_karyawan(){
+if (!function_exists('redir_karyawan')){
+    function redir_karyawan($is_ajax=FALSE){
         $CI =& get_instance();
         $auth = $CI->session->userdata('login_data');
 
@@ -82,11 +79,45 @@ if (!function_exists('is_karyawan')){
 				'type' => 'error',
 				'message' => 'Silahkan login sebagai admin atau approver'
 			);
-			$CI->session->set_flashdata('msg',$msg);
-            redirect('dashboard');
+            $CI->session->set_flashdata('msg',$msg);
+            if($is_ajax){
+                echo json_encode(array('status' => 'error', 'msg' => $msg['message']));
+                exit;
+            }
+            else{
+                redirect('dashboard');
+            }
         }
     }
 }
+
+//helper untuk check apakah login sebagai karyawan
+if(!function_exists('check_login_as')){
+    function check_login_as(){
+        $CI =& get_instance();
+        $auth = $CI->session->userdata('login_data');
+
+        if(is_exist($auth)){
+            return $auth['login_as'];
+        }else{
+            return NULL;
+        }
+    }
+}
+
+//helper untuk mendapatkan login data
+if(!function_exists('get_login_data')){
+    function get_login_data(){
+        $CI =& get_instance();
+        $auth = $CI->session->userdata('login_data');
+        if(is_exist($auth)){
+            return $auth['data'];
+        }else{
+            return NULL;
+        }
+    }
+}
+
 
 //helper untuk check apakah login bukan sebagai karyawan
 if(!function_exists('is_not_karyawan')){
@@ -106,8 +137,8 @@ if(!function_exists('is_not_karyawan')){
 }
 
 //helper untuk check apakah login sebagai bukan admin
-if (!function_exists('is_admin')){
-    function is_admin(){
+if (!function_exists('redir_not_admin')){
+    function redir_not_admin(){
         $CI =& get_instance();
         $auth = $CI->session->userdata('login_data');
 

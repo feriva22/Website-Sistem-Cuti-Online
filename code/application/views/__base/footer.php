@@ -31,8 +31,9 @@
     $this->view($add_php_js['src'],$add_php_js['data']); }
 ?>
 
-<?php if(is_exist($this->session->flashdata('msg'))){
+<?php if($this->session->flashdata('msg') != NULL){
   $result = $this->session->flashdata('msg');
+  //echo json_encode($result['message']);
   echo '<script type="text/javascript">
         $(function() {
           showMessage("'.$result['type'].'","'.$result['message'].'");

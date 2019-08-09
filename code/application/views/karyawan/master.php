@@ -44,7 +44,6 @@
                   <th>Alamat</th>
                   <th>Agama</th>
                   <th>Foto</th>
-                  <th>Jatah Cuti</th>
                   <th>Tanggal Masuk</th>
                   <th>Unit Kerja</th>
                   <th>Jabatan</th>
@@ -114,8 +113,9 @@
             <div class="form-group">
               <label for="krw_jeniskelamin">Jenis Kelamin</label>
               <select class="form-control" name="krw_jeniskelamin" id="krw_jeniskelamin">
-                <option value="0">Perempuan</option>
+                <option value="">Silahkan pilih</option>
                 <option value="1">Laki-laki</option>
+                <option value="2">Perempuan</option>
               </select>
             </div>
             <div class="form-group">
@@ -143,11 +143,6 @@
                   <span class="input-group-text" id="">Upload</span>
                 </div>
               </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="krw_jatahcuti">Jatah Cuti</label>
-              <input type="text" class="form-control" id="krw_jatahcuti" name="krw_jatahcuti" placeholder="Masukkan Jatah Cuti">
             </div>
             -->
             <div class="form-group date">
@@ -177,24 +172,28 @@
                 <?php } ?>
               </select>
             </div>
+            <!--
             <div class="form-group">
               <label for="krw_level">Level</label>
               <select class="form-control" name="krw_level" id="krw_level">
                 <option value="">Silahkan pilih</option>
-                <?php foreach($level_karyawan as $c_lvlkaryawanK => $c_lvlkaryawanV){ ?>
-                  <option value="<?php echo $c_lvlkaryawanK; ?>"><?php echo $c_lvlkaryawanV['text']; ?></option>
-                <?php } ?>
+                <?php //foreach($level_karyawan as $c_lvlkaryawanK => $c_lvlkaryawanV){ ?>
+                  <option value="<?php //echo $c_lvlkaryawanK; ?>"><?php //echo $c_lvlkaryawanV['text']; ?></option>
+                <?php //} ?>
               </select>
             </div>
+            -->
+            <!--
             <div class="form-group">
               <label for="krw_ovrd_atasanpk">Override Atasan Langsung(Kosongi bila staf/dosen)</label>
               <select class="form-control" name="krw_ovrd_atasanpk" id="krw_ovrd_atasanpk">
                 <option value="">Silahkan pilih</option>
-                <?php foreach($atasan_karyawan as $row){ ?>
-                  <option value="<?php echo $row->krw_id; ?>"><?php echo $row->krw_nama; ?></option>
-                <?php } ?>
+                <?php //foreach($atasan_karyawan as $row){ ?>
+                  <option value="<?php //echo $row->krw_id; ?>"><?php //echo $row->krw_nama; ?></option>
+                <?php //} ?>
               </select>
             </div>
+            -->
         </form>
         </div>
         <div class="modal-footer justify-content-between">

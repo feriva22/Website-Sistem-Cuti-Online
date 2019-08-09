@@ -38,14 +38,16 @@
                 <tr>
                   <th></th> 
                   <th>Karyawan</th>
+                  <th>Jenis Cuti</th>
+                  <th>Berkas</th>
                   <th>Tanggal Pengajuan</th>
                   <th>Total</th>
                   <th>Mulai Cuti</th>
                   <th>Selesai Cuti</th>
                   <th>Alasan</th>
                   <th>Status Atasan Langsung</th>
-                  <th>Status SDM</th>
                   <th>Status Atasan Tidak langsung</th>
+                  <th>Status Kabag Admin/Kadir SDMO</th>
                   <?php if($login_as != ADMIN):?>
                     <th>Aksi</th>
                   <?php endif;?>

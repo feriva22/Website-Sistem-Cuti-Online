@@ -26,8 +26,9 @@ class Login extends CI_Controller {
 
 		if($this->form_validation->run()){
 
-			$login_result = $this->login($this->input->post('username'),
-										 $this->input->post('password')
+			$login_result = $this->login(	
+										$this->input->post('username'),
+										$this->input->post('password')
 										);
 			$msg = array(
 				'type' => $login_result->success ? 'success' : 'error',
@@ -40,7 +41,7 @@ class Login extends CI_Controller {
 			if($login_result->success){
 				$sessdata['login_data'] = array(
 												'is_admin' => $login_result->isAdmin,
-												'login_as' => $login_result->isAdmin ? 0 : intval($login_result->data->krw_level),
+												'login_as' => $login_result->isAdmin ? ADMIN : intval($login_result->data->krw_level),
 												'data' => $login_result->data
 				);
 				$this->session->set_userdata($sessdata);
@@ -59,7 +60,8 @@ class Login extends CI_Controller {
 		//coba login ke karyawan dulu 
 		$dataKaryawan = array(
 			'krw_username = "'.$username.'" ',
-			'krw_password = "'.md5($password).'" '
+			'krw_password = "'.md5($password).'" ',
+			'krw_status = '.STATUS_ACTIVE
 		);
 
 		$user_login = $this->m_karyawan->get(FALSE,implode(" AND ",$dataKaryawan),NULL,1);
@@ -67,10 +69,12 @@ class Login extends CI_Controller {
 		if($user_login == NULL){	//jika data tidak ada pada karyawan , coba di admin
 			$dataAdmin = array(
 				'adm_username = "'.$username.'" ',
-				'adm_password = "'.md5($password).'" '
+				'adm_password = "'.md5($password).'"'
 			);
+
 			$user_login = $this->m_admin->get(FALSE,implode(" AND ",$dataAdmin),NULL,1);
-			if($user_login !== NULL)
+
+			if($user_login != NULL)
 				$is_admin = TRUE;
 		}
 

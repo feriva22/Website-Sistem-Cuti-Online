@@ -89,14 +89,34 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('ADMIN',0);
 define('KARYAWAN',1);
-define('SDM',2);
-define('ATASAN_LANGSUNG',3);
-define('ATASAN_TDK_LANGSUNG',4);
-
+define('ATASAN_LANGSUNG',2);
+define('ATASAN_TDK_LANGSUNG',3);
+define('KADIR_SDMO',4);
+define('KABAG_ADMIN',5);
 
 define('STATUS_ACCEPT',1);
 define('STATUS_REJECT',2);
 define('STATUS_WAITING',3);
+define('STATUS_NOT_USED',4);
 
+define('STATUS_DELETED',0);
 define('STATUS_ACTIVE',1);
 define('STATUS_BLOCK',2);
+
+define('CUTI_TAHUNAN',1);
+define('CUTI_BESAR',2);
+define('CUTI_SAKIT',3);
+define('CUTI_LAHIR',4);
+define('CUTI_HAJI',5);
+define('CUTI_DISPEN',6);
+
+define('JATAH_TAHUNAN',1);
+define('JATAH_BESAR',2);
+
+define('LAKI_LAKI',1);
+define('PEREMPUAN',2);
+
+
+define('OVERLAP',1);
+define('PARTIAL',2);
+define('FREE',3);

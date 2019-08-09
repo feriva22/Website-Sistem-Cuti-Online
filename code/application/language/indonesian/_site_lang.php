@@ -1,18 +1,21 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-$lang['level_karyawan'] = array(
+$lang['status_level'] = array(
                 KARYAWAN            => array(
                                                 'text' => 'Karyawan',
                                             ),
-                SDM                 => array(
-                                                'text' => 'Sdm'
-                                            ),
                 ATASAN_LANGSUNG     => array(
                                                 'text' => 'Atasan Langsung'
-                                    ),
+                                            ),
                 ATASAN_TDK_LANGSUNG => array(
-                                    'text' => 'Atasan Tidak Langsung'
-                        )
+                                                'text' => 'Atasan Tidak Langsung'
+                                    ),
+                KADIR_SDMO          => array(
+                                                'text' => 'Kadir SDMO'
+                                    ),
+                KABAG_ADMIN         => array(
+                                                'text' => 'Kabag Admin'
+                                    )
 );
 
 $lang['status_approve'] = array(
@@ -27,7 +30,32 @@ $lang['status_approve'] = array(
                 STATUS_WAITING       => array(
                                                 'text' => 'Menunggu',
                                                 'label' => '<span class="badge badge-warning">Menunggu</span>'
-                                            )
+                ),
+                STATUS_NOT_USED      => array(
+                                                'text' => 'Tidak perlu',
+                                                'label' => '<span class="badge badge-info">Tidak perlu</span>'
+                )
+                );
+
+$lang['jenis_cuti'] = array(
+                    CUTI_TAHUNAN            => array(
+                                                    'text' => 'Cuti Tahunan',
+                                                ),
+                    CUTI_BESAR              => array(
+                                                    'text' => 'Cuti Besar'
+                                                ),
+                    CUTI_SAKIT              => array(
+                                                    'text' => 'Cuti Sakit'
+                                                ),
+                    CUTI_LAHIR              => array(
+                                                    'text' => 'Cuti Lahir/Gugur'
+                                                ),
+                    CUTI_HAJI               => array(
+                                                    'text' => 'Cuti Haji/Umroh'
+                                                ),
+                    CUTI_DISPEN             => array(
+                                                    'text' => 'Cuti Dispensasi dinas/non dinas'
+                    )
                 );
 
 

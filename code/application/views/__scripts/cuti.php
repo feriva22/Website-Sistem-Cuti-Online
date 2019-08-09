@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
     var status_approve = <?php echo json_encode($status_approve); ?>;
+    var jenis_cuti     = <?php echo json_encode($jenis_cuti);?>;
     
     var pk_key = 'cti_id';
     var form_modal = '#cuti-modal';
@@ -42,6 +43,18 @@
                 }
             },
             { data:"krw_nama" },
+            { 
+                data:"cti_jenis",
+                render: function(data, type, meta){
+                    return jenis_cuti[data].text
+                }
+            },
+            {
+                data:"cti_upload",
+                render: function(data, type, meta){
+                    return data || 'Tidak ada';
+                }
+            },
             { data:"cti_tglpengajuan" },
             { data:"cti_hari" },
             { data:"cti_mulai" },
@@ -54,13 +67,13 @@
                 }
             },
             { 
-                data:"cti_appr_sdmstat",
+                data:"cti_appr_attlstat",
                 render: function(data, type, meta){
                     return status_approve[data].label;
                 }
             },
             { 
-                data:"cti_appr_attlstat",
+                data:"cti_appr_sdmstat",
                 render: function(data, type, meta){
                     return status_approve[data].label;
                 }

@@ -6,6 +6,9 @@ const Toast = Swal.mixin({
 });
 
 showMessage = function(type,msg){
+    if(typeof(msg) == 'object'){
+        msg = 'Check inputan anda';
+    }
     Toast.fire({
         type: type,
         title: msg
@@ -15,7 +18,7 @@ showMessage = function(type,msg){
 fillForm = function(selector,data){
     resetForm(selector);
     $.each(data, function(key, value){
-        $('[name='+key+']', selector).val(value);
+            $('[name='+key+']', selector).val(value);
     });
 }
 

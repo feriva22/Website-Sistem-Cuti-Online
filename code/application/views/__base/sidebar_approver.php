@@ -42,7 +42,6 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <?php if(intval($karyawan->krw_level) == SDM):?>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="<?php echo base_url();?>karyawan" class="nav-link">
@@ -51,7 +50,6 @@
                 </a>
               </li>
             </ul>
-            <?php endif;?>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="<?php echo base_url();?>cuti" class="nav-link">
@@ -60,7 +58,7 @@
                 </a>
               </li>
             </ul>
-            <?php if(intval($karyawan->krw_level) == SDM):?>
+            <?php if(check_login_as() == KADIR_SDMO || check_login_as() == KABAG_ADMIN):?>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="<?php echo base_url();?>jatahcuti" class="nav-link">
@@ -97,7 +95,7 @@
             </ul>
           </li>
           <li class="nav-header">SISTEM</li>
-          <?php if(intval($karyawan->krw_level) !== KARYAWAN):?>
+          <?php if(check_login_as() != KARYAWAN):?>
           <li class="nav-item ">
             <a href="<?php echo base_url();?>dashboard/change_login" class="nav-link">
               <i class="nav-icon fas fa-arrow-circle-right"></i>

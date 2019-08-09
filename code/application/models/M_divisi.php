@@ -15,9 +15,11 @@ class M_divisi extends CI_Model {
         if(!$this->isDetail){
             $this->db->select('dvs_id');
             $this->db->select('dvs_nama');
+            $this->db->select('dvs_attljbt_pk');
         }else if($this->isDetail){
             $this->db->select('dvs_id');
             $this->db->select('dvs_nama');
+            $this->db->select('dvs_attljbt_pk');
         }
 
         $this->db->from('divisi');

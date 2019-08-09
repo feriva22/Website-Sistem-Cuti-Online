@@ -14,27 +14,29 @@ class M_jatahcuti extends CI_Model {
     private function select(){
         if(!$this->isDetail){
             $this->db->select('jtc_id');
-            $this->db->select('jtc_validdate');
+            $this->db->select('jtc_jenis');
             $this->db->select('jtc_jumlah');
             $this->db->select('jtc_sisa');
             $this->db->select('jtc_karyawan');
-            $this->db->select('jtc_delaystart');
-            $this->db->select('jtc_delayend');
+            $this->db->select('jtc_validstart');
+            $this->db->select('jtc_validend');
             $this->db->select('jtc_status');
 
             $this->db->select('krw_nama');
+            $this->db->select('krw_tglmasuk');
 
         }else if($this->isDetail){
             $this->db->select('jtc_id');
-            $this->db->select('jtc_validdate');
+            $this->db->select('jtc_jenis');
             $this->db->select('jtc_jumlah');
             $this->db->select('jtc_sisa');
             $this->db->select('jtc_karyawan');
-            $this->db->select('jtc_delaystart');
-            $this->db->select('jtc_delayend');
+            $this->db->select('jtc_validstart');
+            $this->db->select('jtc_validend');
             $this->db->select('jtc_status');
 
             $this->db->select('krw_nama');
+            $this->db->select('krw_tglmasuk');
 
         }
         $this->db->from('jatah_cuti');
@@ -64,14 +66,9 @@ class M_jatahcuti extends CI_Model {
         return $result;
     }
 
-    public function get_datatable(){
-        $limit = intval($this->input->post('length'));
-        if(!is_exist($limit))
-            $limit = 10;
-        
-        $data = array();
+    public function get_datatable($where=NULL){
 
-        $result = $this->get(TRUE,NULL,NULL,10,0);
+        $result = $this->get(TRUE,$where,NULL);
         
         echo json_encode(array(
             'data' => $result,
@@ -100,6 +97,10 @@ class M_jatahcuti extends CI_Model {
 
     public function update($pk_val,$data){
         return $this->db->update('jatah_cuti', $data, "jtc_id = '$pk_val'");
+    }
+
+    public function delete_soft($pk_val){
+        return $this->update($pk_val,array('jtc_status ' => STATUS_DELETED));
     }
 
     public function delete_permanent($pk_val){

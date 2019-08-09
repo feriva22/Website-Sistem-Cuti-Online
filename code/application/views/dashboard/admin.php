@@ -73,10 +73,10 @@
               <div class="inner">
                 <h3><?php echo $tot_cuti_wait;?></h3>
 
-                <p>Total Cuti</p>
+                <p>Cuti Menunggu</p>
               </div>
               <div class="icon">
-                <i class="ion ion-clipboard"></i>
+                <i class="ion ion-clock"></i>
               </div>
               <a href="<?php echo base_url();?>cuti" class="small-box-footer">Info selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>

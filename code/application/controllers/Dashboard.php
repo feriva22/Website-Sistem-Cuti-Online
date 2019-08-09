@@ -5,7 +5,7 @@ class Dashboard extends CI_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model(array('m_karyawan','m_admin','m_jatahcuti','m_cuti'));
+        $this->load->model(array('m_karyawan','m_admin','m_cuti','m_jatahcuti'));
         $this->lang->load('_site');
 
         is_login();
@@ -19,10 +19,10 @@ class Dashboard extends CI_Controller {
 
         if($auth['is_admin']){
             redirect('dashboard/admin');
-        }else if(intval($auth['data']->krw_level) === KARYAWAN ){
+        }else if($auth['data']->krw_level == KARYAWAN ){
             redirect('dashboard/karyawan');
         }
-        else if(intval($auth['data']->krw_level) !== KARYAWAN){
+        else if($auth['data']->krw_level != KARYAWAN){
             if($auth['login_as'] == KARYAWAN)
                 redirect('dashboard/karyawan');
             else if($auth['login_as'] != KARYAWAN)
@@ -37,16 +37,16 @@ class Dashboard extends CI_Controller {
         if(!$auth['is_admin'])
             redirect('dashboard');
         
-        $this->site_info->set_page_title('Dashboard - Karyawan');
+        $this->site_info->set_page_title('Dashboard - Admin');
 
         $data = array();
-        $data['admin'] = $this->m_admin->get(TRUE,'adm_username = "'.$auth['data']->adm_username.'"',NULL,1);
-        $data['tot_karyawan'] = $this->m_karyawan->total();
+        $data['admin'] = $auth['data'];
+        $data['tot_karyawan'] = $this->m_karyawan->total("krw_status = ".STATUS_ACTIVE);
 
         $data['tot_cuti_acc'] = $this->m_cuti->get_total(implode(" AND ",array(
             'cti_appr_sdmstat ='. STATUS_ACTIVE,
-            'cti_appr_atlstat ='. STATUS_ACTIVE,
-            'cti_appr_attlstat ='.STATUS_ACTIVE
+            '(cti_appr_atlstat = '. STATUS_ACTIVE . ' OR cti_appr_atlstat = '. STATUS_NOT_USED.')',
+            '(cti_appr_attlstat ='.STATUS_ACTIVE . ' or cti_appr_attlstat = '. STATUS_NOT_USED.')'
         )));
 
         $data['tot_cuti_wait'] = $this->m_cuti->get_total(
@@ -83,28 +83,30 @@ class Dashboard extends CI_Controller {
         $this->site_info->set_page_title('Dashboard - Karyawan');
 
         $data = array();
-        $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1); 
-        $data['level_karyawan'] = $this->lang->line('level_karyawan');
+        $data['karyawan'] = $auth['data'];
+        $data['status_level'] = $this->lang->line('status_level');
 
         $data['tot_cuti'] = $this->m_jatahcuti->get_sisa_cuti(array(
-            'jtc_karyawan ='. $auth['data']->krw_id,
+            'jtc_karyawan ='. get_login_data()->krw_id,
             'jtc_status =' . STATUS_ACTIVE
         ));
         
+        //$data['tot_cuti'] = 0;
+        
         $data['tot_cuti_acc'] = $this->m_cuti->get_total(implode(" AND ",array(
-            'cti_karyawan ='. $auth['data']->krw_id,
+            'cti_karyawan ='. get_login_data()->krw_id,
             'cti_appr_sdmstat ='. STATUS_ACTIVE,
-            'cti_appr_atlstat ='. STATUS_ACTIVE,
-            'cti_appr_attlstat ='.STATUS_ACTIVE
+            '(cti_appr_atlstat = '. STATUS_ACTIVE . ' OR cti_appr_atlstat = '. STATUS_NOT_USED.')',
+            '(cti_appr_attlstat ='.STATUS_ACTIVE . ' or cti_appr_attlstat = '. STATUS_NOT_USED.')'
         )));
 
         $data['tot_cuti_wait'] = $this->m_cuti->get_total(implode(" AND ",array(
-            'cti_karyawan ='. $auth['data']->krw_id,
+            'cti_karyawan ='. get_login_data()->krw_id,"(".
             implode(" OR ",array(
                 'cti_appr_sdmstat ='. STATUS_WAITING,
-                'cti_appr_atlstat ='. STATUS_WAITING,
+                'cti_appr_atlstat = '. STATUS_WAITING ,
                 'cti_appr_attlstat ='.STATUS_WAITING
-            ))
+            )).")"
         )));
 
         $data['tot_cuti_reject'] = $this->m_cuti->get_total(implode(" AND ",array(
@@ -115,6 +117,7 @@ class Dashboard extends CI_Controller {
                 'cti_appr_attlstat ='.STATUS_REJECT
             ))
         )));
+    
 
 
         $this->load->view('__base/header');
@@ -126,32 +129,32 @@ class Dashboard extends CI_Controller {
     public function approver(){
         $auth = $this->session->userdata('login_data');
 
-        if(intval($auth['data']->krw_level) == KARYAWAN || $auth['is_admin'])
+        redir_karyawan();
+        if(check_login_as() == ADMIN){
             redirect('dashboard');
-        if($auth['login_as'] === KARYAWAN)
-            redirect('dashboard/karyawan');
+        }
 
         $this->site_info->set_page_title('Dashboard - Approver');
 
         $data = array();
-        $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1);
-        $data['level_karyawan'] = $this->lang->line('level_karyawan');
-        $data['login_as'] = $auth['login_as'];
+        $data['karyawan'] = $auth['data'];
+        $data['status_level'] = $this->lang->line('status_level');
 
         $filter = NULL;
-        if($auth['login_as'] == SDM){
-            $filter = "cti_appr_atlstat = ".STATUS_ACCEPT;
+        if($auth['login_as'] == KADIR_SDMO || $auth['login_as'] == KABAG_ADMIN ){
+            $filter = "cti_appr_sdmstat = ".STATUS_WAITING;
         }
-        else if($auth['login_as'] == ATASAN_TDK_LANGSUNG){
-            $filter = "cti_appr_sdmstat = ".STATUS_ACCEPT;
+        else{
+            $filter = "cti_appr_atlstat = ".STATUS_WAITING .' OR cti_appr_attlstat = '.STATUS_WAITING;
         }
 
         $data['tot_cuti'] = $this->m_cuti->get_total($filter);
 
+
         $data['tot_cuti_acc'] = $this->m_cuti->get_total(implode(" AND ",array(
             'cti_appr_sdmstat ='. STATUS_ACTIVE,
-            'cti_appr_atlstat ='. STATUS_ACTIVE,
-            'cti_appr_attlstat ='.STATUS_ACTIVE
+            '(cti_appr_atlstat = '. STATUS_ACTIVE . ' OR cti_appr_atlstat = '. STATUS_NOT_USED.')',
+            '(cti_appr_attlstat ='.STATUS_ACTIVE . ' or cti_appr_attlstat = '. STATUS_NOT_USED.')'
         )));
 
         $data['tot_cuti_wait'] = $this->m_cuti->get_total(

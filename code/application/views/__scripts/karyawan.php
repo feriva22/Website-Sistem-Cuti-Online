@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
-    var level_karyawan = <?php echo json_encode($level_karyawan); ?>;
+    var status_level = <?php echo json_encode($status_level); ?>;
     var pk_key = 'krw_id';
     var form_modal = '#karyawan-modal';
     var form_key = '#karyawan-form';
@@ -60,14 +60,14 @@
             {   data:"krw_foto",
                 visible: false 
             },
-            {   data:"krw_jatahcuti",
-                visible: false 
-            },
             {   data:"krw_tglmasuk",
                 visible: false 
             },  //tgl masuk
             {   data:"dvs_nama",
-                visible: true 
+                visible: true,
+                render: function(data,type,meta){
+                    return data || 'Tidak Ada';
+                } 
             },
             {   data:"jbt_nama",
                 visible: true 
@@ -75,7 +75,7 @@
             { 
                 data:"krw_level",
                 render: function(data, type, meta){
-                    return level_karyawan[data].text;
+                    return status_level[data].text;
                 }
             },
             { 
@@ -150,7 +150,7 @@
                 if(resp.status == 'ok')
                     showMessage('success',resp.msg);
                 else
-                    showMessage('error','Ada yang belum diisi');
+                    showMessage('error',resp.msg);
 
                 closeForm(form_modal);
                 reloadTable(dataTableObj);

@@ -9,8 +9,8 @@ class Jabatan extends CI_Controller {
         $this->lang->load('_site');
 
         is_login();
-        is_karyawan();  //jika karyawan redirect ke dashboard
-        is_admin(); //jika bukan admin redirect ke dashboard
+        redir_karyawan();  //jika karyawan redirect ke dashboard
+        redir_not_admin(); //jika bukan admin redirect ke dashboard
     }
 
     public function index(){
@@ -22,7 +22,7 @@ class Jabatan extends CI_Controller {
         else if($auth['login_as'] !== KARYAWAN)
             $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1);
 
-        $data['jabatan'] = $this->m_jabatan->get(TRUE);
+        $data['status_level'] = $this->lang->line('status_level');
 
         $data['add_js'] = array(
             'plugins/datatables/jquery.dataTables.js',
@@ -35,6 +35,7 @@ class Jabatan extends CI_Controller {
                             'src'  => '__scripts/jabatan'
         );
 
+
         $this->site_info->set_page_title('Jabatan');
 
         $this->load->view('__base/header',$data);
@@ -44,7 +45,7 @@ class Jabatan extends CI_Controller {
         else if($auth['login_as'] !== KARYAWAN)
             $this->load->view('__base/sidebar_approver',$data);
 
-        $this->load->view('jabatan/master');
+        $this->load->view('jabatan/master',$data);
         $this->load->view('__base/footer',$data);
     }
 

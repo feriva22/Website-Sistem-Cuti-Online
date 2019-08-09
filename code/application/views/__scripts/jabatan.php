@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
+    var status_level = <?php echo json_encode($status_level); ?>;
     var pk_key = 'jbt_id';
     var form_modal = '#jabatan-modal';
     var form_key = '#jabatan-form';
@@ -30,6 +31,12 @@
                 }
             },
             { data:"jbt_nama" },
+            { 
+                data:"jbt_level",
+                render: function(data, type,meta){
+                    return status_level[data].text;
+                } 
+            },
             { 
                 data:"jbt_id",
                 render: function(data, type, meta){

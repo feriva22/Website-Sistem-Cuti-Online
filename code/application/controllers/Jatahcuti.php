@@ -9,21 +9,19 @@ class Jatahcuti extends CI_Controller {
         $this->lang->load('_site');
 
         is_login();
-        is_karyawan();  //jika karyawan redirect ke dashboard
+        //redir_karyawan();  //jika karyawan redirect ke dashboard
     }
 
     public function index(){
         $auth = $this->session->userdata('login_data');
 
         $data = array();
-        if($auth['login_as'] == ADMIN)
-            $data['admin'] = $this->m_admin->get(TRUE,'adm_username = "'.$auth['data']->adm_username.'"',NULL,1);
-        else if($auth['login_as'] !== KARYAWAN)
-            $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1);
+        $data['admin'] = $auth['data'];
+        $data['karyawan'] = $auth['data'];
 
         $data['jatahcuti'] = $this->m_jatahcuti->get(TRUE);
         $data['allkaryawan'] = $this->m_karyawan->get(TRUE,NULL,"krw_tglmasuk desc");
-
+        $data['status_level'] = $this->lang->line("status_level");
         $data['add_js'] = array(
             'plugins/datatables/jquery.dataTables.js',
             'plugins/datatables/dataTables.bootstrap4.js',
@@ -46,7 +44,9 @@ class Jatahcuti extends CI_Controller {
 
         if($auth['login_as'] == ADMIN)
             $this->load->view('__base/sidebar_admin',$data);
-        else if($auth['login_as'] !== KARYAWAN)
+        else if($auth['login_as'] == KARYAWAN)
+            $this->load->view('__base/sidebar_karyawan',$data);
+        else if($auth['login_as'] != KARYAWAN)
             $this->load->view('__base/sidebar_approver',$data);
 
         $this->load->view('jatahcuti/master');
@@ -56,11 +56,21 @@ class Jatahcuti extends CI_Controller {
     public function get_dataajax(){
         if(!$this->input->is_ajax_request()) show_404();
 
-        $this->m_jatahcuti->get_datatable();
+        $auth = $this->session->userdata('login_data');
+
+        $filter_data = array(
+            'jtc_status != '.STATUS_DELETED
+        );
+
+        if(!$auth['is_admin'] && check_login_as() == KARYAWAN){
+            $filter_data[] = 'jtc_karyawan = '.$auth['data']->krw_id;
+        }
+
+        $this->m_jatahcuti->get_datatable(implode(" AND ",$filter_data));
     }
 
     public function detail(){
-        if(!$this->input->is_ajax_request()) show_404();
+        if(!$this->input->is_ajax_request()) show_404();        
 
 		$search_data = $this->input->post('jtc_id');
 		if($search_data === NULL)
@@ -82,12 +92,16 @@ class Jatahcuti extends CI_Controller {
 
     public function add(){
         if(!$this->input->is_ajax_request()) show_404();
+
+        redir_karyawan(TRUE);
         
 		$this->save();
     }
     
     public function edit(){
-		if(!$this->input->is_ajax_request()) show_404();
+        if(!$this->input->is_ajax_request()) show_404();
+        
+        redir_karyawan(TRUE);
 
 		$this->save();
     }
@@ -97,11 +111,11 @@ class Jatahcuti extends CI_Controller {
 
         $this->load->library('form_validation');
         $this->form_validation->set_rules('jtc_id'                , 'Id Jatah Cuti'                  , 'integer');
-        $this->form_validation->set_rules('jtc_validdate'          , 'Tanggal Valid Jatah cuti'       , 'required');
+        $this->form_validation->set_rules('jtc_jenis'             , 'Jenis Jatah cuti'               , 'required|integer');
         $this->form_validation->set_rules('jtc_jumlah'            , 'Jumlah Jatah Cuti'              , 'required|integer');
         $this->form_validation->set_rules('jtc_karyawan'          , 'Karyawan'                       , 'required');
-        $this->form_validation->set_rules('jtc_delaystart'        , 'Tanggal Mulai Delay'            , 'required');
-        $this->form_validation->set_rules('jtc_delayend'          , 'Tanggal Selesai Delay'          , 'required');
+        $this->form_validation->set_rules('jtc_validstart'        , 'Tanggal Berlaku'                , 'required');
+        $this->form_validation->set_rules('jtc_validend'          , 'Tanggal Hangus'                 , 'required');
         $this->form_validation->set_rules('jtc_status'            , 'Status Jatah Cuti'              , 'required|integer');
 
         if($this->input->post('jtc_id') == ''){
@@ -156,6 +170,8 @@ class Jatahcuti extends CI_Controller {
     public function delete(){
         if(!$this->input->is_ajax_request()) show_404();
 
+        redir_karyawan();
+
         if($this->input->post('jtc_id') === NULL) {
             echo json_encode(array(
                 'status' => 'error',
@@ -169,7 +185,8 @@ class Jatahcuti extends CI_Controller {
             $deleted = $this->m_jatahcuti->get(TRUE,'jtc_id = '.$row,NULL,1);
 
             if($deleted !== NULL){
-                $this->m_jatahcuti->delete_permanent($row);
+                //$this->m_jatahcuti->delete_permanent($row);
+                $this->m_jatahcuti->delete_soft($row);
                 $all_deleted[] = 'deleted';
             }
         }

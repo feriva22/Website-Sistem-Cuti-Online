@@ -36,6 +36,7 @@
                 <tr>
                   <th></th> 
                   <th>Nama</th>
+                  <th>Level</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
@@ -72,6 +73,15 @@
             <div class="form-group">
               <label for="jbt_nama">Nama jabatan</label>
               <input type="text" class="form-control" id="jbt_nama" name="jbt_nama" placeholder="Masukkan Nama Jabatan">
+            </div>
+            <div class="form-group">
+              <label for="jbt_level">Level</label>
+              <select class="form-control" name="jbt_level" id="jbt_level">
+                  <option value="">Silahkan pilih</option>
+                  <?php foreach($status_level as $c_statuslvlK => $c_statuslvlV){ ?>
+                    <option value="<?php echo $c_statuslvlK; ?>"><?php echo $c_statuslvlV['text']; ?></option>
+                  <?php } ?>
+              </select>
             </div>
         </form>
         </div>

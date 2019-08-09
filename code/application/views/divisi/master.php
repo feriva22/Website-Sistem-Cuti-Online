@@ -73,6 +73,15 @@
               <label for="dvs_nama">Nama Unit Kerja</label>
               <input type="text" class="form-control" id="dvs_nama" name="dvs_nama" placeholder="Masukkan Nama Unit Kerja">
             </div>
+            <div class="form-group">
+              <label for="dvs_attljbt_pk">Atasan Tidak Langsung</label>
+              <select class="form-control" name="dvs_attljbt_pk" id="dvs_attljbt_pk">
+                  <option value="">Silahkan pilih</option>
+                  <?php foreach($atasan_tidak_langsung as $row){ ?>
+                    <option value="<?php echo $row->jbt_id; ?>"><?php echo $row->jbt_nama; ?></option>
+                  <?php } ?>
+              </select>
+            </div>
         </form>
         </div>
         <div class="modal-footer justify-content-between">

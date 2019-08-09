@@ -24,7 +24,6 @@ class M_karyawan extends CI_Model {
             $this->db->select('krw_alamat');
             $this->db->select('krw_agama');
             $this->db->select('krw_foto');
-            $this->db->select('krw_jatahcuti');
             $this->db->select('krw_tglmasuk');
             $this->db->select('krw_divisi');
             $this->db->select('krw_jabatan');
@@ -34,6 +33,7 @@ class M_karyawan extends CI_Model {
 
             $this->db->select('dvs_nama'); //data divisi
             $this->db->select('jbt_nama '); //data jabatan
+            $this->db->select('dvs_attljbt_pk'); //jabatan atasan tidak langsung siapa
 
         }else if($this->isDetail){
             $this->db->select('krw_id');
@@ -46,7 +46,6 @@ class M_karyawan extends CI_Model {
             $this->db->select('krw_alamat');
             $this->db->select('krw_agama');
             $this->db->select('krw_foto');
-            $this->db->select('krw_jatahcuti');
             $this->db->select('krw_tglmasuk');
             $this->db->select('krw_divisi');
             $this->db->select('krw_jabatan');
@@ -55,16 +54,17 @@ class M_karyawan extends CI_Model {
 
             $this->db->select('dvs_nama'); //data divisi
             $this->db->select('jbt_nama'); //data jabatan
+            $this->db->select('dvs_attljbt_pk'); //jabatan atasan tidak langsung siapa
 
             
         }
 
         $this->db->from('karyawan');
-        $this->db->join('divisi','dvs_id = krw_divisi');
+        $this->db->join('divisi','dvs_id = krw_divisi','left');
         $this->db->join('jabatan', 'jbt_id = krw_jabatan');
     }
     
-    public function get($isDetail = FALSE,$where="",$order="",$limit=NULL,$offset=NULL,$escape=NULL){
+    public function get($isDetail = FALSE,$where=NULL,$order=NULL,$limit=NULL,$offset=NULL,$escape=NULL){
         $this->isDetail = $isDetail;
 
         $this->select();
@@ -87,14 +87,11 @@ class M_karyawan extends CI_Model {
     }
 
 
-    public function get_datatable(){
-        $limit = intval($this->input->post('length'));
-        if(!is_exist($limit))
-            $limit = 10;
+    public function get_datatable($where=NULL,$order=NULL){
         
         $data = array();
 
-        $result = $this->get(TRUE,NULL,"krw_tglmasuk desc",10,0);
+        $result = $this->get(TRUE,$where,$order);
         
         echo json_encode(array(
             'data' => $result,
@@ -111,7 +108,6 @@ class M_karyawan extends CI_Model {
     }
 
     public function insert($data){
-        $data['krw_password'] = md5($data['krw_password']);
 
         $this->db->insert('karyawan', $data);
 		return $this->db->insert_id();
@@ -124,6 +120,10 @@ class M_karyawan extends CI_Model {
             unset($data['krw_password']);
 
         return $this->db->update('karyawan', $data, "krw_id = '$pk_val'");
+    }
+
+    public function delete_soft($pk_val){
+        return $this->update($pk_val,array('krw_status ' => STATUS_DELETED));
     }
 
     public function delete_permanent($pk_val){

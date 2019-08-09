@@ -15,16 +15,20 @@ class M_jabatan extends CI_Model {
         if(!$this->isDetail){
             $this->db->select('jbt_id');
             $this->db->select('jbt_nama');
+            $this->db->select('jbt_level');
+
         }else if($this->isDetail){
             $this->db->select('jbt_id');
             $this->db->select('jbt_nama');
+            $this->db->select('jbt_level');
+
         }
 
         $this->db->from('jabatan');
         
     }
     
-    public function get($isDetail = FALSE,$where=NULL,$order="",$limit=NULL,$offset=NULL,$escape=NULL){
+    public function get($isDetail = FALSE,$where=NULL,$order=NULL,$limit=NULL,$offset=NULL,$escape=NULL){
         $this->isDetail = $isDetail;
 
         $this->select();
@@ -48,12 +52,12 @@ class M_jabatan extends CI_Model {
 
     public function get_datatable(){
         $limit = intval($this->input->post('length'));
-        if(!is_exist($limit))
+        if(!isset($limit))
             $limit = 10;
         
         $data = array();
 
-        $result = $this->get(TRUE,NULL,NULL,10,0);
+        $result = $this->get(TRUE,NULL,NULL);
         
         echo json_encode(array(
             'data' => $result,

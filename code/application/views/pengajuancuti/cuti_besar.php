@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Pengajuan Cuti Baru</h1>
+            <h1>Pengajuan Cuti Besar Baru</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -28,6 +28,9 @@
               <!-- form start -->
               <form role="form" action="<?php echo base_url();?>pengajuancuti/add" method="POST">
                 <div class="card-body">
+                <div class="form-group">
+                    <input type="hidden" class="form-control" id="cti_jenis" name="cti_jenis" value="<?php echo CUTI_BESAR;?>">
+                  </div>
                   <div class="form-group date">
                       <label for="cti_mulai">Mulai Tanggal</label>
                       <div class="input-group date" id="cti_mulai" data-target-input="nearest">
@@ -49,7 +52,11 @@
                   <div class="form-group">
                     <label for="cti_alasan">Alasan Cuti</label>
                     <input type="text" class="form-control" id="cti_alasan" name="cti_alasan" placeholder="Masukkan Alasan Cuti">
-                </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="cti_alamat_cuti">Alamat saat Cuti</label>
+                      <input type="text" class="form-control" id="cti_alamat_cuti" name="cti_alamat_cuti" placeholder="Masukkan Alamat Cuti">
+                  </div>
                 </div>
                 <!-- /.card-body -->
 

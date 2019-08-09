@@ -36,15 +36,20 @@
               <table id="historicuti-table" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th></th> 
-                  <th>Tanggal Pengajuan</th>
-                  <th>Total Hari</th>
-                  <th>Mulai Cuti</th>
-                  <th>Selesai Cuti</th>
-                  <th>Alasan</th>
-                  <th>Status Atasan Langsung</th>
-                  <th>Status SDM</th>
-                  <th>Status Atasan Tidak Langsung</th>
+                  <th rowspan="2" class="align-middle text-center"></th>
+                  <th rowspan="2" class="align-middle text-center">Jenis</th>
+                  <th rowspan="2" class="align-middle text-center">Berkas</th>
+                  <th rowspan="2" class="align-middle text-center">Tanggal Pengajuan</th>
+                  <th rowspan="2" class="align-middle text-center">Total Hari</th>
+                  <th rowspan="2" class="align-middle text-center">Mulai</th>
+                  <th rowspan="2" class="align-middle text-center">Selesai</th>
+                  <th rowspan="2" class="align-middle text-center">Alasan</th>
+                  <th colspan="3" class="text-center">Status</th>
+                </tr>
+                <tr>
+                  <th>Atasan Langsung</th>
+                  <th>Atasan Tidak Langsung</th>
+                  <th>Kabag/Kadir SDMO & TIK</th>
                 </tr>
                 </thead>
                 <tbody>

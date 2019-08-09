@@ -5,25 +5,26 @@ class Divisi extends CI_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model(array('m_karyawan','m_admin','m_divisi'));
+        $this->load->model(array('m_karyawan','m_admin','m_divisi','m_jabatan'));
         $this->lang->load('_site');
 
         is_login();
-        is_karyawan();  //jika karyawan redirect ke dashboard
-        is_admin(); //jika bukan admin redirect ke dashboard
+        redir_karyawan();  //jika karyawan redirect ke dashboard
+        redir_not_admin(); //jika bukan admin redirect ke dashboard
     }
 
     public function index(){
-        is_karyawan();
+        redir_karyawan();
         $auth = $this->session->userdata('login_data');
 
         $data = array();
         if($auth['login_as'] == ADMIN)
             $data['admin'] = $this->m_admin->get(TRUE,'adm_username = "'.$auth['data']->adm_username.'"',NULL,1);
-        else if($auth['login_as'] !== KARYAWAN)
+        else if($auth['login_as'] != KARYAWAN)
             $data['karyawan'] = $this->m_karyawan->get(TRUE,'krw_username = "'.$auth['data']->krw_username.'"',NULL,1);
 
-        $data['divisi'] = $this->m_divisi->get(TRUE);
+        //$data['divisi'] = $this->m_divisi->get(TRUE);
+        $data['atasan_tidak_langsung'] = $this->m_jabatan->get(TRUE,"jbt_level = ".ATASAN_TDK_LANGSUNG); //get data when atasan tidak langsung
 
         $data['add_js'] = array(
             'plugins/datatables/jquery.dataTables.js',
@@ -36,7 +37,7 @@ class Divisi extends CI_Controller {
                             'src'  => '__scripts/divisi'
         );
 
-        $this->site_info->set_page_title('Divisi');
+        $this->site_info->set_page_title('Unit Kerja');
 
         $this->load->view('__base/header',$data);
 
@@ -45,7 +46,7 @@ class Divisi extends CI_Controller {
         else if($auth['login_as'] !== KARYAWAN)
             $this->load->view('__base/sidebar_approver',$data);
 
-        $this->load->view('divisi/master');
+        $this->load->view('divisi/master',$data);
         $this->load->view('__base/footer',$data);
     }
 
@@ -94,6 +95,7 @@ class Divisi extends CI_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('dvs_id'                , 'Id Divisi'                  , 'integer');
         $this->form_validation->set_rules('dvs_nama'              , 'Nama Divisi'                , 'required');
+        $this->form_validation->set_rules('dvs_attljbt_pk'        , 'Atasan Tidak Langsung'      , 'required|integer');
         
         if($this->form_validation->run()){
             // insert

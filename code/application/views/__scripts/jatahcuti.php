@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
+
     var pk_key = 'jtc_id';
     var form_modal = '#jatahcuti-modal';
     var form_key = '#jatahcuti-form';
@@ -19,16 +20,21 @@
             return 'Blokir'
     }
 
+    function get_jenis(data){
+        if(data == 1)
+            return 'Cuti Tahunan'
+        else if (data == 2)
+            return 'Cuti Besar'
+        else
+            return 'Tidak diketahui'
+    }
+
     //Datetimepicker start
-    $('#jtc_validdate').datetimepicker({
+    $('#jtc_validstart').datetimepicker({
         viewMode: 'days',
         format: 'YYYY-MM-DD'
     });
-    $('#jtc_delaystart').datetimepicker({
-        viewMode: 'days',
-        format: 'YYYY-MM-DD'
-    });
-    $('#jtc_delayend').datetimepicker({
+    $('#jtc_validend').datetimepicker({
         viewMode: 'days',
         format: 'YYYY-MM-DD'
     });
@@ -52,17 +58,23 @@
                 }
             },
             { data:"krw_nama" },
-            { data:"jtc_validdate" },
+            { 
+                data:"jtc_jenis",
+                render: function(data, type, meta){
+                    return get_jenis(data);
+                }
+            },
             { data:"jtc_jumlah" },
             { data:"jtc_sisa" },
-            { data:"jtc_delaystart" },
-            { data:"jtc_delayend" },
+            { data:"jtc_validstart" },
+            { data:"jtc_validend" },
             { 
                 data:"jtc_status",
                 render: function(data, type, meta){
                     return get_status(data);
                 }
             },
+            <?php if(check_login_as() != KARYAWAN):?>
             { 
                 data:"jtc_id",
                 render: function(data, type, meta){
@@ -70,6 +82,7 @@
                             <button class="btn btn-sm btn-danger btn-delete" data-id=${data}><i class="fa fa-trash"></i></button>`;
                 }
             }
+            <?php endif;?>
         ]
     });
 
@@ -139,8 +152,7 @@
                 if(resp.status == 'ok')
                     showMessage('success',resp.msg);
                 else
-                    showMessage('error','Ada yang belum diisi');
-                console.log(resp);
+                    showMessage('error',resp.msg);
 
                 closeForm(form_modal);
                 reloadTable(dataTableObj);

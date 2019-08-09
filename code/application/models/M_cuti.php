@@ -8,7 +8,6 @@ class M_cuti extends CI_Model {
 	function __construct()
 	{ 
         parent::__construct();
-        $this->load->model('m_jatahcuti');
 
     }
 
@@ -17,6 +16,9 @@ class M_cuti extends CI_Model {
         if(!$this->isDetail){
             $this->db->select('cti_id');
             $this->db->select('cti_karyawan');
+            $this->db->select('cti_jenis');
+            $this->db->select('cti_upload');
+            $this->db->select('cti_alamat_cuti');
             $this->db->select('cti_tglpengajuan');
             $this->db->select('cti_hari');
             $this->db->select('cti_mulai');
@@ -36,10 +38,14 @@ class M_cuti extends CI_Model {
             $this->db->select('cti_appr_attldate');
 
             $this->db->select('krw_nama');
+            $this->db->select('krw_divisi');
 
         }else if($this->isDetail){
             $this->db->select('cti_id');
             $this->db->select('cti_karyawan');
+            $this->db->select('cti_jenis');
+            $this->db->select('cti_upload');
+            $this->db->select('cti_alamat_cuti');
             $this->db->select('cti_tglpengajuan');
             $this->db->select('cti_hari');
             $this->db->select('cti_mulai');
@@ -59,21 +65,27 @@ class M_cuti extends CI_Model {
             $this->db->select('cti_appr_attldate');
 
             $this->db->select('krw_nama');
+            $this->db->select('krw_divisi');
+
         }
 
         $this->db->from('cuti');
+        //$this->db->from('divisi');
         $this->db->join('karyawan','krw_id = cti_karyawan');
         
     }
     
-    public function get($isDetail = FALSE,$where="",$order="",$limit=NULL,$offset=NULL,$escape=NULL){
+    public function get($isDetail = FALSE,$where=NULL,$order=NULL,$limit=NULL,$offset=NULL,$escape=NULL,$table=NULL){
         $this->isDetail = $isDetail;
 
         $this->select();
 
+        if(is_exist($table)) $this->db->from($table);
+
         if(is_exist($where))  $this->db->where($where, NULL, $escape);
 
         if(is_exist($order)) $this->db->order_by($order, '', $escape);
+
 
         if(is_exist($limit) && is_exist($offset)) 
             $this->db->limit($limit, $offset);
@@ -88,14 +100,14 @@ class M_cuti extends CI_Model {
         return $result;
     }
 
-    public function get_datatable($filter=NULL){
+    public function get_datatable($filter=NULL,$order=NULL,$table=NULL){
         $limit = intval($this->input->post('length'));
         if(!is_exist($limit))
             $limit = 10;
         
         $data = array();
 
-        $result = $this->get(TRUE,$filter,NULL,10,0);
+        $result = $this->get(TRUE,$filter,$order,NULL,NULL,NULL,$table);
         
         echo json_encode(array(
             'data' => $result,
@@ -110,29 +122,17 @@ class M_cuti extends CI_Model {
         return count($result);
     }
 
-    private function insert($karyawan_id,$data){
-        $karyawan = $this->m_karyawan->get(TRUE,"krw_id = ".$karyawan_id,NULL,1);
-        $stat_atl = STATUS_WAITING;
-        $stat_sdm = STATUS_WAITING;
-        $stat_attl = STATUS_WAITING;
-        $atasan_pk = NULL;
-        if(is_exist($karyawan)){
-            if(intval($karyawan->krw_level) == ATASAN_LANGSUNG && $karyawan->krw_ovrd_atasanpk != NULL){
-//                $stat_atl = STATUS_ACCEPT;
-                $atasan_pk = $karyawan->krw_ovrd_atasanpk;
-
-            }
-            /*else if(intval($karyawan->krw_level) == SDM){
-                $stat_atl = STATUS_ACCEPT;
-                $stat_sdm = STATUS_ACCEPT;
-            }*/
-            /*if(intval($karyawan->krw_level) == ATASAN_TDK_LANGSUNG ){
-                //jika ATASAN TIDAK LANGSUNG yang mengajukan
-                //$stat_attl = STATUS_ACCEPT; 
-            }*/
-        }
+    private function insert($data){
+        $this->load->model('m_karyawan');
+        $karyawan = $this->m_karyawan->get(TRUE,"krw_id = ".$data['cti_karyawan'],NULL,1);
+        $stat_atl = isset($data['cti_appr_atlstat']) ? $data['cti_appr_atlstat'] : STATUS_WAITING;
+        $stat_sdm = isset($data['cti_appr_sdmstat']) ? $data['cti_appr_sdmstat'] : STATUS_WAITING;
+        $stat_attl = isset($data['cti_appr_attlstat']) ? $data['cti_appr_attlstat'] : STATUS_WAITING;
         $data = array(
-            'cti_karyawan'          => $karyawan_id,
+            'cti_karyawan'          => $data['cti_karyawan'],
+            'cti_jenis'             => $data['cti_jenis'],
+            'cti_upload'            => $data['cti_upload'],
+            'cti_alamat_cuti'       => $data['cti_alamat_cuti'],
             'cti_tglpengajuan'      => date('Y-m-d H:i:s'),
             'cti_hari'              => $data['cti_hari'],
             'cti_mulai'             => $data['cti_mulai'],
@@ -163,24 +163,17 @@ class M_cuti extends CI_Model {
 
 
     
-    public function ajukan_cuti($karyawan_id,$data,$jtc_pk,$jtc_jumlah){
+    public function ajukan_cuti($data,$jtc_pk=NULL,$jtc_jumlah=NULL){
 
-        $this->load->model('m_karyawan');
+        $this->load->model('m_jatahcuti');
 
-        $result = $this->insert($karyawan_id,$data);
+        $result = $this->insert($data);
         
-        $this->m_jatahcuti->update($jtc_pk,array(   //decrement jumlah cuti
-            'jtc_sisa' => intval($jtc_jumlah)-intval($data['cti_hari'])
-        ));
-
-        $filter = array(
-            'jtc_karyawan' => $karyawan_id,
-            'jtc_status' => STATUS_ACTIVE
-        );
-        $sisa_cuti = $this->m_jatahcuti->get_sisa_cuti($filter);
-        //update sisa cuti karyawan
-        $krw_id = $this->m_karyawan->update($karyawan_id,array( 'krw_jatahcuti' => $sisa_cuti));
-
+        if(is_exist($jtc_pk) && is_exist($jtc_jumlah)){
+            $this->m_jatahcuti->update($jtc_pk,array(   //decrement jumlah cuti
+                'jtc_sisa' => intval($jtc_jumlah)-intval($data['cti_hari'])
+            ));
+        }
         
         return $result;
     }

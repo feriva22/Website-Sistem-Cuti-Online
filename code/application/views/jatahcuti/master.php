@@ -25,9 +25,11 @@
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Data Jatah Cuti</h3>
+              <?php if(check_login_as() != KARYAWAN):?>
               <div class="float-right">
                 <button class="btn btn-sm btn-success btn-add">Tambah</button>
               </div>
+              <?php endif;?>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -36,13 +38,15 @@
                 <tr>
                   <th></th> 
                   <th>Karyawan</th>
-                  <th>Tanggal Valid</th>
+                  <th>Jenis</th>
                   <th>Jumlah</th>
                   <th>Sisa</th>
-                  <th>Mulai Delay</th>
-                  <th>Selesai Delay</th>
+                  <th>Tanggal Berlaku</th>
+                  <th>Tanggal Hangus</th>
                   <th>Status</th>
+                  <?php if(check_login_as() != KARYAWAN):?>
                   <th>Aksi</th>
+                  <?php endif;?>
                 </tr>
                 </thead>
                 <tbody>
@@ -85,12 +89,13 @@
               </select>
             </div>
             <div class="form-group date">
-                <label for="jtc_validdate">Tanggal Mulai Valid</label>
-                <div class="input-group date" id="jtc_validdate" data-target-input="nearest">
-                    <input type="text" name="jtc_validdate" class="form-control datetimepicker-input" placeholder="Masukkan Tanggal Valid" data-target="#jtc_validdate"/>
-                    <div class="input-group-append" data-target="#jtc_validdate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="far fa-calendar"></i></div>
-                    </div>
+                <label for="jtc_jenis">Jenis Cuti</label>
+                <div class="input-group date" id="jtc_jenis" data-target-input="nearest">
+                  <select class="form-control" name="jtc_jenis" id="jtc_jenis">
+                    <option value="">Silahkan pilih</option>
+                    <option value="1">Cuti Tahunan</option>
+                    <option value="2">Cuti Besar</option>
+                  </select>
                 </div>
             </div>
             <div class="form-group">
@@ -102,19 +107,19 @@
               <input type="number" class="form-control" id="jtc_sisa" name="jtc_sisa" placeholder="Masukkan Sisa Jatah Cuti">
             </div>
             <div class="form-group date">
-                <label for="jtc_delaystart">Mulai Delay</label>
-                <div class="input-group date" id="jtc_delaystart" data-target-input="nearest">
-                    <input type="text" name="jtc_delaystart" class="form-control datetimepicker-input" placeholder="Masukkan Mulai Delay Jatah Cuti" data-target="#jtc_delaystart"/>
-                    <div class="input-group-append" data-target="#jtc_delaystart" data-toggle="datetimepicker">
+                <label for="jtc_validstart">Tanggal Berlaku</label>
+                <div class="input-group date" id="jtc_validstart" data-target-input="nearest">
+                    <input type="text" name="jtc_validstart" class="form-control datetimepicker-input" placeholder="Masukkan Mulai Tanggal Berlaku Cuti" data-target="#jtc_validstart"/>
+                    <div class="input-group-append" data-target="#jtc_validstart" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="far fa-calendar"></i></div>
                     </div>
                 </div>
             </div>
             <div class="form-group date">
-                <label for="jtc_delayend">Selesai Delay</label>
-                <div class="input-group date" id="jtc_delayend" data-target-input="nearest">
-                    <input type="text" name="jtc_delayend" class="form-control datetimepicker-input" placeholder="Masukkan Selesai Delay Jatah Cuti" data-target="#jtc_delayend"/>
-                    <div class="input-group-append" data-target="#jtc_delayend" data-toggle="datetimepicker">
+                <label for="jtc_validend">Tanggal Hangus</label>
+                <div class="input-group date" id="jtc_validend" data-target-input="nearest">
+                    <input type="text" name="jtc_validend" class="form-control datetimepicker-input" placeholder="Masukkan Tanggal Hangus Jatah Cuti" data-target="#jtc_validend"/>
+                    <div class="input-group-append" data-target="#jtc_validend" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="far fa-calendar"></i></div>
                     </div>
                 </div>
