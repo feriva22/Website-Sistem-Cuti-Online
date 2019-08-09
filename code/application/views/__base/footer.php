@@ -9,6 +9,7 @@
 <script type="text/javascript">
   var base_url = "<?php echo base_url();?>";
 </script>
+
 <!-- jQuery -->
 <script src="<?php echo base_url();?>assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -19,6 +20,11 @@
 <script src="<?php echo base_url();?>assets/plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- Master Template JS -->
 <script src="<?php echo base_url();?>assets/js/jquery.mastertemplate.js"></script>
+<!-- login js -->
+<script src="<?php echo base_url();?>assets/js/login.js"></script>
+<!-- Google Api load -->
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
 <!-- add js plugin -->
 <?php if(isset($add_js)):?>
   <?php foreach($add_js as $js):?>
@@ -33,6 +39,7 @@
 
 <?php if($this->session->flashdata('msg') != NULL){
   $result = $this->session->flashdata('msg');
+  echo $result;
   //echo json_encode($result['message']);
   echo '<script type="text/javascript">
         $(function() {

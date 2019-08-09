@@ -120,3 +120,10 @@ define('PEREMPUAN',2);
 define('OVERLAP',1);
 define('PARTIAL',2);
 define('FREE',3);
+
+
+/*google constanta */
+define('GOOGLE_CLIENT_ID', '748550443976-4nmq429duihnbu4p8hvv6482fc2igmbd.apps.googleusercontent.com');
+define('GOOGLE_CLIENT_SECRET', 'VUCRuZu6oRPR4ob4eKL7PMST');
+define('GOOGLE_REDIR_URI', 'http://localhost:9999');
+define('GOOGLE_API_KEY', 'AIzaSyBTx7BBeR0nMsrli_pmx4oscIIHHkFEj44');

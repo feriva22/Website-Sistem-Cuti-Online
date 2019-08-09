@@ -13,7 +13,6 @@ class Login extends CI_Controller {
 	public function index()
 	{
 		$this->site_info->set_page_title('Login');
-
 		$this->load->view('login/index');
 	}
 
@@ -90,6 +89,90 @@ class Login extends CI_Controller {
 			return $result;
 		}
 	}
+
+	public function google(){
+		if(!$this->input->is_ajax_request()) show_404();
+
+		$id_token = $this->input->post("idtoken");
+
+		if($id_token != NULL || $id_token != ""){
+				
+			// Include two files from google-php-client library in controller
+			require_once APPPATH . "libraries/Google/autoload.php";
+			include_once APPPATH . "libraries/Google/Client.php";
+			include_once APPPATH . "libraries/Google/Service/Oauth2.php";
+
+			// Create Client Request to access Google API
+			$client = new Google_Client();
+			$client->setApplicationName("Sistem Cuti UISI Oauth Login");
+			$client->setClientId(GOOGLE_CLIENT_ID);
+			$client->setClientSecret(GOOGLE_CLIENT_SECRET);
+			$client->setRedirectUri(GOOGLE_REDIR_URI);
+			$client->setDeveloperKey(GOOGLE_API_KEY);
+			$client->addScope("https://www.googleapis.com/auth/userinfo.email");
+
+			// Send Client Request
+			$objOAuthService = new Google_Service_Oauth2($client);
+
+			//verify the id token
+			$decoded_token = $client->verifyIdToken($id_token);
+			
+			if($decoded_token){ //if valid id token
+				//$payload is parsed jwt token to information account
+				$payload = $decoded_token->getAttributes()['payload'];
+				$userid = $payload['sub'];
+				$email = $payload['email'];
+
+				$krw_filter = array(
+					'krw_email = "'.$email.'"',
+					'krw_status = '.STATUS_ACTIVE
+				);
+
+				//check on my database for current user
+				$user_login = $this->m_karyawan->get(FALSE,implode(" AND ",$krw_filter),NULL,1);
+
+				if($user_login != NULL){
+					$sessdata['login_data'] = array(
+						'is_admin' => FALSE,
+						'login_as' => $user_login->krw_level,
+						'data' => $user_login
+					);
+
+					$this->session->set_userdata($sessdata);
+
+					echo json_encode(array(
+						'status' => 'ok',
+						'message' => 'Sukses Login','redir' => base_url()."dashboard/"
+					));
+					exit;
+				}
+				else{
+					echo json_encode(array(
+						'status' => 'error',
+						'message' => 'User tidak ada di sistem'
+					));
+					exit;
+				}
+			}
+			else {
+				//invalid id token
+				echo json_encode(array(
+					'status' => 'error',
+					'message' => 'Invalid id token'
+				));
+				exit;
+			}
+		}
+		else{
+			//invalid id token
+			echo json_encode(array(
+				'status' => 'error',
+				'message' => 'Invalid id token'
+			));
+			exit;
+		}
+	}
+
 
 	public function logout(){
 		//$this->session->sess_destroy();

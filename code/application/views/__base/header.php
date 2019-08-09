@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content=<?php echo GOOGLE_CLIENT_ID;?>>
   <title><?php echo $this->site_info->get_page_title(TRUE);?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
